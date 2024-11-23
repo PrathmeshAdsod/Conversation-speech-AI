@@ -8,7 +8,7 @@ import tempfile
 from pydub import AudioSegment
 import sounddevice as sd
 import wave
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 # Load environment variables
 load_dotenv()
 
@@ -25,7 +25,7 @@ st.write("Upload an audio file or record your voice to start the process.")
 
 # Add a sidebar for interaction options
 interaction_mode = st.sidebar.selectbox(
-    "Choose Interaction Mode:", ["Upload Audio", "Record Voice"]
+    "Choose Interaction Mode:", ["Record Voice", "Upload Audio"]
 )
 
 # Record Voice Functionality
@@ -44,8 +44,8 @@ def record_audio(filename, duration=5, sample_rate=44100):
 
 # Process Audio Input
 if interaction_mode == "Record Voice":
-    #duration = st.slider("Select Recording Duration (seconds):", 1, 10, 5)
-    duration = 30
+    duration = st.slider("Select Recording Duration (seconds):", min_value=10, max_value=120, step=10)
+    #duration = 30
     record_btn = st.button("Start Recording")
     
     if record_btn:
@@ -72,7 +72,7 @@ if 'temp_audio_path' in locals() and temp_audio_path is not None:
     # Generate AI Response
     st.write("Generating a conversational response...")
     client = openai.OpenAI(
-        api_key=os.environ.get("OPENAI_API_KEY"),
+        api_key=os.environ.get("SAMBANOVA_API_KEY"),
         base_url="https://api.sambanova.ai/v1",
     )
     
@@ -100,7 +100,7 @@ if 'temp_audio_path' in locals() and temp_audio_path is not None:
 
     # Convert response text to speech using gTTS
     st.write("Converting the response to speech...")
-    tts = gTTS(answer, lang="en")
+    tts = gTTS(text=answer,  slow=False)
     response_audio_path = "final_response.mp3"
     tts.save(response_audio_path)
 
