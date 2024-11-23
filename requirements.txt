@@ -5,3 +5,4 @@ tempfile
 pydub
 python-dotenv
 streamlit
+sounddevice
