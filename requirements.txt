@@ -1,0 +1,7 @@
+openai
+openai-whisper
+gTTS
+tempfile
+pydub
+python-dotenv
+streamlit
