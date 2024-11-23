@@ -6,9 +6,9 @@ import openai
 import streamlit as st
 import tempfile
 from pydub import AudioSegment
-import sounddevice as sd
 import wave
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+import pyaudio
+
 # Load environment variables
 load_dotenv()
 
@@ -28,24 +28,35 @@ interaction_mode = st.sidebar.selectbox(
     "Choose Interaction Mode:", ["Record Voice", "Upload Audio"]
 )
 
-# Record Voice Functionality
+# Record Voice Functionality using pydub and pyaudio
 def record_audio(filename, duration=5, sample_rate=44100):
     st.info(f"Recording for {duration} seconds...")
-    recording = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=2, dtype='int16')
-    sd.wait()  # Wait for the recording to finish
-    st.success("Recording complete!")
+    p = pyaudio.PyAudio()
     
-    # Save the recording
+    # Open a stream for recording
+    stream = p.open(format=pyaudio.paInt16, channels=1, rate=sample_rate, input=True, frames_per_buffer=1024)
+    
+    frames = []
+    for _ in range(0, int(sample_rate / 1024 * duration)):
+        data = stream.read(1024)
+        frames.append(data)
+    
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+    
+    # Save the recorded frames as a WAV file
     with wave.open(filename, 'wb') as wf:
-        wf.setnchannels(2)
-        wf.setsampwidth(2)  # 2 bytes per sample
+        wf.setnchannels(1)
+        wf.setsampwidth(p.get_sample_size(pyaudio.paInt16))
         wf.setframerate(sample_rate)
-        wf.writeframes(recording.tobytes())
+        wf.writeframes(b''.join(frames))
+
+    st.success("Recording complete!")
 
 # Process Audio Input
 if interaction_mode == "Record Voice":
     duration = st.slider("Select Recording Duration (seconds):", min_value=10, max_value=120, step=10)
-    #duration = 30
     record_btn = st.button("Start Recording")
     
     if record_btn:
@@ -65,6 +76,14 @@ elif interaction_mode == "Upload Audio":
 # Process and Transcribe Audio
 if 'temp_audio_path' in locals() and temp_audio_path is not None:
     st.write("Processing the audio file...")
+    
+    # If the uploaded or recorded audio is in MP3 format, convert it to WAV for Whisper
+    if temp_audio_path.endswith(".mp3"):
+        audio = AudioSegment.from_mp3(temp_audio_path)
+        temp_audio_path = temp_audio_path.replace(".mp3", ".wav")
+        audio.export(temp_audio_path, format="wav")
+
+    # Transcribe audio using Whisper
     result = whisper_model.transcribe(temp_audio_path)
     user_text = result["text"]
     st.write("Transcribed Text:", user_text)
