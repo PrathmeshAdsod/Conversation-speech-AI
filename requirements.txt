@@ -1,6 +1,9 @@
-openai
-openai-whisper
+whisper
 gTTS
-pydub
 python-dotenv
+openai
 streamlit
+pydub
+pyaudio
+numpy
+torch
