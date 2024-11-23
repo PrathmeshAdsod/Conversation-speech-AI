@@ -7,3 +7,4 @@ pydub
 pyaudio
 numpy
 torch
+ffmpeg
