@@ -3,8 +3,7 @@ gTTS
 python-dotenv
 openai
 streamlit
-pydub
-pyaudio
+sounddevice
 numpy
 torch
 ffmpeg
