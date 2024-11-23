@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import openai
 import streamlit as st
 import tempfile
-from pydub import AudioSegment
+
 import sounddevice as sd
 import wave
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
