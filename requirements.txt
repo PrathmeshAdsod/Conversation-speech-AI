@@ -5,3 +5,4 @@ pydub
 python-dotenv
 streamlit
 sounddevice
+libportaudio2
