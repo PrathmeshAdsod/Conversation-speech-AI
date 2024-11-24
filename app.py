@@ -30,12 +30,7 @@ interaction_mode = st.sidebar.radio(
     ["Record Voice", "Upload Audio"],
     index=0
 )
-"""
-st.sidebar.markdown(
-    "💡 *Record your voice or upload an audio file. "
-    "The app transcribes the input, generates an AI response, and converts it to speech.*"
-)
-"""
+
 
 
 # Record Voice Functionality
