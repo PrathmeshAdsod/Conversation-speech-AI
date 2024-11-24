@@ -75,8 +75,9 @@ if 'temp_audio_path' in locals() and temp_audio_path:
     st.write("Generating a conversational response...")
     
     with st.spinner("Generating response..."):
+        # use environment varable OPENAI_API_KEY instead SAMBANOVA_API_KEY
         client = openai.OpenAI(
-            api_key=os.environ.get("SAMBANOVA_API_KEY"),
+            api_key=os.environ.get("OPENAI_API_KEY"),
             base_url="https://api.sambanova.ai/v1",
         )
         
